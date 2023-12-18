@@ -7,7 +7,7 @@
 APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 }
 
@@ -16,7 +16,10 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	YourParentClass* ParentObject = GetYourParentObject();
+	check(GEngine != nullptr);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using CharacterMovement."));
+
 	
 }
 
@@ -32,5 +35,35 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// Set up "movement" bindings.
+	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	//PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::AddControllerYawInput);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::StartJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::StopJump);
+
 }
 
+void APlayerCharacter::MoveForward(float Value)
+{
+	// Find out which way is "forward" and record that the player wants to move that way.
+	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	//AddMovementInput(Direction, Value);
+}
+
+void APlayerCharacter::MoveRight(float Value)
+{
+	// Find out which way is "right" and record that the player wants to move that way.
+	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	//AddMovementInput(Direction, Value);
+}
+
+void APlayerCharacter::StartJump()
+{
+	bPressedJump = true;
+}
+
+void APlayerCharacter::StopJump()
+{
+	bPressedJump = false;
+}

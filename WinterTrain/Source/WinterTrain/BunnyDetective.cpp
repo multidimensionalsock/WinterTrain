@@ -1,0 +1,66 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "BunnyDetective.h"
+
+// Sets default values
+ABunnyDetective::ABunnyDetective()
+{
+ 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+}
+
+// Called when the game starts or when spawned
+void ABunnyDetective::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
+// Called every frame
+void ABunnyDetective::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+// Called to bind functionality to input
+void ABunnyDetective::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis("MoveForward", this, &ABunnyDetective::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ABunnyDetective::MoveRight);
+	//PlayerInputComponent->BindAxis("Turn", this, &ACharacterMovement::AddControllerYawInput);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABunnyDetective::StartJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ABunnyDetective::StopJump);
+
+}
+
+
+void ABunnyDetective::MoveForward(float Value)
+{
+	// Find out which way is "forward" and record that the player wants to move that way.
+	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	AddMovementInput(Direction, Value);
+}
+
+void ABunnyDetective::MoveRight(float Value)
+{
+	// Find out which way is "right" and record that the player wants to move that way.
+	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	AddMovementInput(Direction, Value);
+}
+
+void ABunnyDetective::StartJump()
+{
+	bPressedJump = true;
+}
+
+void ABunnyDetective::StopJump()
+{
+	bPressedJump = false;
+}
+
+

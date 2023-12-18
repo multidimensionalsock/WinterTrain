@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "PlayerCharacter.generated.h"
+#include "BunnyDetective.generated.h"
 
 UCLASS()
-class WINTERTRAIN_API APlayerCharacter : public ACharacter
+class WINTERTRAIN_API ABunnyDetective : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	APlayerCharacter();
+	ABunnyDetective();
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,4 +41,5 @@ public:
 	// Clears jump flag when key is released.
 	UFUNCTION()
 	void StopJump();
+
 };
