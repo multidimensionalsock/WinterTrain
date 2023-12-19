@@ -3,12 +3,36 @@
 
 #include "BunnyDetective.h"
 
+#include "ParticleHelper.h"
+#include "Camera/CameraComponent.h"
+#include "Components/InputComponent.h"
+#include "GameFramework/Controller.h"
+#include "GameFramework/SpringArmComponent.h"
+
 // Sets default values
 ABunnyDetective::ABunnyDetective()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	playerModel = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Bunny"));
+	playerModel->SetupAttachment(RootComponent);
+
+	turner = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turn"));
+	turner->SetupAttachment(RootComponent);
+
+	// Create a camera boom (pulls in towards the player if there is a collision)
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(turner);
+	CameraBoom->TargetArmLength = 600.0f; // The camera follows at this distance behind the character	
+	CameraBoom->bUsePawnControlRotation = false; // Rotate the arm based on the controller
+
+	// Create a follow camera
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	//FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	cameraRot = 270;
 }
 
 // Called when the game starts or when spawned
@@ -41,15 +65,51 @@ void ABunnyDetective::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ABunnyDetective::MoveForward(float Value)
 {
-	// Find out which way is "forward" and record that the player wants to move that way.
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	FVector Direction;
+	if (cameraRot == 180 || cameraRot == 270)
+	{
+		if (Value == 1)
+		{
+			Value = -1;
+		}
+		else if (Value == - 1)
+		{
+			Value = 1;
+		}
+	}
+	if (cameraRot == 90 || cameraRot == 270)
+	{
+		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	}
+	else
+	{
+		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	}
 	AddMovementInput(Direction, Value);
 }
 
 void ABunnyDetective::MoveRight(float Value)
 {
-	// Find out which way is "right" and record that the player wants to move that way.
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	FVector Direction;
+	if (cameraRot == 90 || cameraRot == 180)
+	{
+		if (Value == 1)
+		{
+			Value = -1;
+		}
+		else if (Value == -1)
+		{
+			Value = 1;
+		}
+	}
+	if (cameraRot == 90 || cameraRot == 270)
+	{
+		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	}
+	else
+	{
+		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	}
 	AddMovementInput(Direction, Value);
 }
 
