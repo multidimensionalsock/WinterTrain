@@ -69,6 +69,9 @@ public:
 	UFUNCTION()
 	void SpinCameraLeft();
 
+	UFUNCTION()
+	void ChangeDirection(FVector Direction);
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

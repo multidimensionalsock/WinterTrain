@@ -4,10 +4,12 @@
 #include "BunnyDetective.h"
 
 #include "ParticleHelper.h"
+#include "ActorFactories/ActorFactoryEmptyActor.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ABunnyDetective::ABunnyDetective()
@@ -66,6 +68,7 @@ void ABunnyDetective::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ABunnyDetective::MoveForward(float Value)
 {
+	if (Value == 0) return;
 	FVector Direction;
 	if (cameraRot == 180 || cameraRot == 270)
 	{
@@ -86,11 +89,13 @@ void ABunnyDetective::MoveForward(float Value)
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
 	}
+	ChangeDirection(Direction);
 	AddMovementInput(Direction, Value);
 }
 
 void ABunnyDetective::MoveRight(float Value)
 {
+	if (Value == 0) return;
 	FVector Direction;
 	if (cameraRot == 90 || cameraRot == 180)
 	{
@@ -111,6 +116,7 @@ void ABunnyDetective::MoveRight(float Value)
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	}
+	ChangeDirection(Direction);
 	AddMovementInput(Direction, Value);
 }
 
@@ -145,5 +151,32 @@ void ABunnyDetective::StopJump()
 {
 	bPressedJump = false;
 }
+
+void ABunnyDetective::ChangeDirection(FVector Direction)
+{
+	if (Direction.X == 0 && Direction.Y == 0) return;
+
+	float DirectionX = Direction.X;
+	float DirectionY = Direction.Y;
+
+	//FRotator temp = FRotator::ZeroRotator;
+	//temp.Yaw = UKismetMathLibrary::Atan2(DirectionY, DirectionX) * 180/ UKismetMathLibrary::GetPI();
+	//temp.Yaw -= 90;
+
+	//float AngleCosine = FVector::DotProduct(FVector::Zero(), Direction) / (FVector::Zero().Size() * Direction.Size());
+	//float AngleRadians = FMath::Acos(AngleCosine);
+	float rad = UKismetMathLibrary::Atan2(DirectionY, DirectionX);
+	float deg = UKismetMathLibrary::RadiansToDegrees(rad);
+
+	FRotator temp = FRotator::ZeroRotator;
+	temp.Yaw = deg - 90;
+
+	playerModel->SetWorldRotation(temp, false, nullptr, ETeleportType::None);
+
+	
+
+	
+}
+
 
 
