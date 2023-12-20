@@ -68,7 +68,7 @@ void ABunnyDetective::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ABunnyDetective::MoveForward(float Value)
 {
-	if (Value == 0) return;
+	
 	FVector Direction;
 	if (cameraRot == 180 || cameraRot == 270)
 	{
@@ -81,6 +81,7 @@ void ABunnyDetective::MoveForward(float Value)
 			Value = 1;
 		}
 	}
+	
 	if (cameraRot == 90 || cameraRot == 270)
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
@@ -89,13 +90,11 @@ void ABunnyDetective::MoveForward(float Value)
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
 	}
-	ChangeDirection(Direction);
 	AddMovementInput(Direction, Value);
 }
 
 void ABunnyDetective::MoveRight(float Value)
 {
-	if (Value == 0) return;
 	FVector Direction;
 	if (cameraRot == 90 || cameraRot == 180)
 	{
@@ -116,7 +115,6 @@ void ABunnyDetective::MoveRight(float Value)
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	}
-	ChangeDirection(Direction);
 	AddMovementInput(Direction, Value);
 }
 
@@ -152,29 +150,22 @@ void ABunnyDetective::StopJump()
 	bPressedJump = false;
 }
 
-void ABunnyDetective::ChangeDirection(FVector Direction)
+void ABunnyDetective::ChangeDirection(float Value, bool XDir)
 {
-	if (Direction.X == 0 && Direction.Y == 0) return;
+	if (XDir)
+	{
+		currentMoveDir.X = Value;
+	}
+	else
+	{
+		currentMoveDir.Y = Value;
+	}
+	if (Value == 0) return;
 
-	float DirectionX = Direction.X;
-	float DirectionY = Direction.Y;
-
-	//FRotator temp = FRotator::ZeroRotator;
-	//temp.Yaw = UKismetMathLibrary::Atan2(DirectionY, DirectionX) * 180/ UKismetMathLibrary::GetPI();
-	//temp.Yaw -= 90;
-
-	//float AngleCosine = FVector::DotProduct(FVector::Zero(), Direction) / (FVector::Zero().Size() * Direction.Size());
-	//float AngleRadians = FMath::Acos(AngleCosine);
-	float rad = UKismetMathLibrary::Atan2(DirectionY, DirectionX);
-	float deg = UKismetMathLibrary::RadiansToDegrees(rad);
-
+	float deg = UKismetMathLibrary::Atan2(currentMoveDir.Y, currentMoveDir.X) * 180/ UKismetMathLibrary::GetPI();
 	FRotator temp = FRotator::ZeroRotator;
 	temp.Yaw = deg - 90;
-
 	playerModel->SetWorldRotation(temp, false, nullptr, ETeleportType::None);
-
-	
-
 	
 }
 

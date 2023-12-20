@@ -26,6 +26,9 @@ class WINTERTRAIN_API ABunnyDetective : public ACharacter
 	UPROPERTY(EditAnywhere)
 	class USkeletalMeshComponent* playerModel;
 
+	UPROPERTY()
+	FVector currentMoveDir;
+
 public:
 	// Sets default values for this character's properties
 	ABunnyDetective();
@@ -70,7 +73,7 @@ public:
 	void SpinCameraLeft();
 
 	UFUNCTION()
-	void ChangeDirection(FVector Direction);
+	void ChangeDirection(float Value, bool XDir);
 
 public:
 	/** Returns CameraBoom subobject **/
