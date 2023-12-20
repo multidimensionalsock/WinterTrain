@@ -63,6 +63,12 @@ public:
 	UFUNCTION()
 	void StopJump();
 
+	UFUNCTION()
+	void SpinCameraRight();
+
+	UFUNCTION()
+	void SpinCameraLeft();
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

@@ -32,7 +32,7 @@ ABunnyDetective::ABunnyDetective()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	//FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	cameraRot = 270;
+	cameraRot = 0;
 }
 
 // Called when the game starts or when spawned
@@ -56,9 +56,10 @@ void ABunnyDetective::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABunnyDetective::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABunnyDetective::MoveRight);
-	//PlayerInputComponent->BindAxis("Turn", this, &ACharacterMovement::AddControllerYawInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABunnyDetective::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ABunnyDetective::StopJump);
+	PlayerInputComponent->BindAction("CameraRight", IE_Released, this, &ABunnyDetective::SpinCameraRight);
+	PlayerInputComponent->BindAction("CameraLeft", IE_Released, this, &ABunnyDetective::SpinCameraLeft);
 
 }
 
@@ -111,6 +112,28 @@ void ABunnyDetective::MoveRight(float Value)
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	}
 	AddMovementInput(Direction, Value);
+}
+
+void ABunnyDetective::SpinCameraRight()
+{
+	cameraRot -= 90;
+	if (cameraRot >= 360)
+		cameraRot = 0;
+
+	FRotator temp = FRotator::ZeroRotator;
+	temp.Yaw = cameraRot;
+	turner->SetWorldRotation(temp , false, nullptr, ETeleportType::None );
+}
+
+void ABunnyDetective::SpinCameraLeft()
+{
+	cameraRot += 90;
+	if (cameraRot < 0)
+		cameraRot = 270;
+
+	FRotator temp = FRotator::ZeroRotator;
+	temp.Yaw = cameraRot;
+	turner->SetWorldRotation(temp , false, nullptr, ETeleportType::None );
 }
 
 void ABunnyDetective::StartJump()
