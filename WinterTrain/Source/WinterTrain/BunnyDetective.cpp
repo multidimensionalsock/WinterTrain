@@ -85,10 +85,12 @@ void ABunnyDetective::MoveForward(float Value)
 	if (cameraRot == 90 || cameraRot == 270)
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+		ChangeDirection(Value, false);
 	}
 	else
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+		ChangeDirection(Value, true);
 	}
 	AddMovementInput(Direction, Value);
 }
@@ -110,10 +112,12 @@ void ABunnyDetective::MoveRight(float Value)
 	if (cameraRot == 90 || cameraRot == 270)
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+		ChangeDirection(Value, true);
 	}
 	else
 	{
 		Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+		ChangeDirection(Value, false);
 	}
 	AddMovementInput(Direction, Value);
 }
