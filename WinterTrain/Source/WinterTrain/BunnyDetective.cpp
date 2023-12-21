@@ -127,10 +127,15 @@ void ABunnyDetective::SpinCameraRight()
 	cameraRot -= 90;
 	if (cameraRot >= 360)
 		cameraRot = 0;
+	if (cameraRot < 0)
+		cameraRot = 270;
 
 	FRotator temp = FRotator::ZeroRotator;
 	temp.Yaw = cameraRot;
 	turner->SetWorldRotation(temp , false, nullptr, ETeleportType::None );
+	
+	FString TheFloatStr = FString::SanitizeFloat(cameraRot);
+	GEngine->AddOnScreenDebugMessage( -1,1.0,FColor::Red, *TheFloatStr );	
 }
 
 void ABunnyDetective::SpinCameraLeft()
@@ -138,10 +143,15 @@ void ABunnyDetective::SpinCameraLeft()
 	cameraRot += 90;
 	if (cameraRot < 0)
 		cameraRot = 270;
+	if (cameraRot >= 360)
+		cameraRot = 0;
 
 	FRotator temp = FRotator::ZeroRotator;
 	temp.Yaw = cameraRot;
 	turner->SetWorldRotation(temp , false, nullptr, ETeleportType::None );
+
+	FString TheFloatStr = FString::SanitizeFloat(cameraRot);
+	GEngine->AddOnScreenDebugMessage( -1,1.0,FColor::Red, *TheFloatStr );	
 }
 
 void ABunnyDetective::StartJump()
