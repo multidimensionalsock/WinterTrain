@@ -16,9 +16,14 @@ public:
 	// Sets default values for this component's properties
 	UPlayerAnimationController();
 
+	UPROPERTY(BlueprintReadWrite)
+	bool jumping;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+    
 
 public:	
 	// Called every frame

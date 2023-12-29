@@ -19,6 +19,12 @@ void UPlayerAnimationController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UInputComponent*  PlayerInputComponent = this->GetOwner()->InputComponent;
+	PlayerInputComponent->BindAxis("MoveForward", this, &ABunnyDetective::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ABunnyDetective::MoveRight);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABunnyDetective::StartJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ABunnyDetective::StopJump);
+
 	// ...
 	
 }
